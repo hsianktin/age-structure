@@ -82,8 +82,8 @@ end
 # obtain the current value
 (n,t) = n₊(β, μ, k);
 # obtain the perturbed value
-δμ(x) = μ_0 + 0.01
-(δn,δt) = n₊(β, δμ, k)
+# δμ(x) = μ_0 + 0.01
+# (δn,δt) = n₊(β, δμ, k)
 
 # # inspect the equilibrium density
 # using PGFPlotsX
