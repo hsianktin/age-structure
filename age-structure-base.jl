@@ -57,7 +57,7 @@ N(n) = ∑(n[1:end-1])*dx+n[end]
 
 ## function to obtain equilibrium density via time-forward method
 function n₊(β, μ, k)
-    Nₜ = Array{Int,1}()
+    Nₜ = Array{Float64,1}()
     Tₜ = Array{Float64,1}()
     t = 0
     # set initial condition, a proper initial condition helps
