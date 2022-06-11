@@ -9,6 +9,12 @@ if length(ARGS) == 3
     β_0 = parse(Float64, ARGS[1])
     μ_0 = parse(Float64, ARGS[2])
     k_0 = parse(Float64, ARGS[3])
+    type = "semi-constant" # default type of kernel
+elseif length(ARGS) == 4
+    β_0 = parse(Float64, ARGS[1])
+    μ_0 = parse(Float64, ARGS[2])
+    k_0 = parse(Float64, ARGS[3])
+    type = ARGS[4]
 else
     error!("usage: age-structure-base.jl β_0 μ_0 k_0")
 end
@@ -27,7 +33,7 @@ A = 10 # this selection is special, due to the specific form
 μ(x) = μ_0 # constant death rate
 
 # the interaction k
-K = Inf # cut off age for interaction, not used in fact
+K = A # cut off age for interaction, not used in fact
 function k(x′,x, type="semi-constant")
     if type == "semi-constant"
         # semi-constant specification
@@ -38,7 +44,7 @@ function k(x′,x, type="semi-constant")
         else
             return 0
         end
-    elseif type == "x'-constant"
+    elseif type == "semi-x′"
         # semi-constant specification
         a = 2 # critical age of interaction 
         # k(x',x) = k_0 if x' > a > x, 0 otherwise
@@ -67,14 +73,12 @@ function n₊(β, μ, k)
         n[i] = n[i-1] * exp(-μ(x(i-1))*dx)
     end
     # run
-    count = 0
-    while (maximum(abs.(∂ₜn(β,μ,k,n)./n)) > 1e-3 || t < 10) && t < 200
+    while t < 200
         push!(Nₜ,N(n))
         push!(Tₜ,t)
         # the hard upper limit t = 1000 is necessary because the actual solution
         # might be oscillating... In practice it is often the case
         n,t = ∂ₜndt(n,t,β,μ,k)
-        count += 1
     end
     CSV.write("traces/$(β_0)_$(μ_0)_$(k_0).csv", DataFrame(N=Nₜ,T=Tₜ))
     return (n,t)
@@ -110,8 +114,8 @@ df = DataFrame(
     k_0 = Float64[],
     N = Float64[],
     T = Float64[],
-    ∂ᵤN = Float64[],
-    ∂ᵤlnN = Float64[],
+    # ∂ᵤN = Float64[],
+    # ∂ᵤlnN = Float64[],
 )
 push!(df,[
         β_0,
@@ -119,8 +123,8 @@ push!(df,[
         k_0,
         ∑(n[1:end-1])*dx+n[end],
         t,
-        (∑(δn[1:end-1])*dx+δn[end]-∑(n[1:end-1])*dx-n[end])/0.01,
-        (∑(δn[1:end-1])*dx+δn[end]-∑(n[1:end-1])*dx-n[end])/(0.01*∑(n[1:end-1])*dx+n[end])
+        # (∑(δn[1:end-1])*dx+δn[end]-∑(n[1:end-1])*dx-n[end])/0.01,
+        # (∑(δn[1:end-1])*dx+δn[end]-∑(n[1:end-1])*dx-n[end])/(0.01*∑(n[1:end-1])*dx+n[end])
     ])
 if !isdir("data")
     mkdir("data")

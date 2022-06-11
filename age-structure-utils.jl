@@ -8,7 +8,7 @@ x(i) = (i-1)*dx # index to x
 function ∫ₓkndx′(k::Function,n::Array,a::Number)
     ∫ₓkndx = 0
     for j in 1:i(A)-1
-        ∫ₓkndx += k(x(j),a) * n[j] * dx
+        ∫ₓkndx += k(x(j),a,type) * n[j] * dx
     end
     ∫ₓkndx += k(A,a) * n[i(A)]
     return ∫ₓkndx
