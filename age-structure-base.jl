@@ -5,6 +5,7 @@ using CSV,DataFrames
 β_0 = 2
 μ_0 = 0.4
 k_0 = 2
+type = "semi-x′"
 if length(ARGS) == 3
     β_0 = parse(Float64, ARGS[1])
     μ_0 = parse(Float64, ARGS[2])
@@ -73,14 +74,19 @@ function n₊(β, μ, k)
         n[i] = n[i-1] * exp(-μ(x(i-1))*dx)
     end
     # run
+    count = 0
     while t < 200
         push!(Nₜ,N(n))
         push!(Tₜ,t)
         # the hard upper limit t = 1000 is necessary because the actual solution
         # might be oscillating... In practice it is often the case
         n,t = ∂ₜndt(n,t,β,μ,k)
+        # count += 1
+        # if count % 10 == 0
+        #     print("t = $(t), ∫βndx/dx = $(n[1])\r")
+        # end
     end
-    CSV.write("traces/$(β_0)_$(μ_0)_$(k_0).csv", DataFrame(N=Nₜ,T=Tₜ))
+    # CSV.write("traces/$(β_0)_$(μ_0)_$(k_0).csv", DataFrame(N=Nₜ,T=Tₜ))
     return (n,t)
 end
 # obtain the current value
