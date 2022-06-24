@@ -1,5 +1,5 @@
-βs = [i/10 for i in 15:5:25]
-μs = [i/10 for i in 5:5:15]
+βs = [i/10 for i in 15:0.25:25]
+μs = [i/10 for i in 5:0.25:15]
 ks = [1]
 type = "semi-x′"
 label = "example_1_b"

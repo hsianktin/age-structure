@@ -1,6 +1,6 @@
 using CSV,DataFrames
 using Distributed
-addprocs(10)
+addprocs(14)
 begin
     using ProgressMeter
 end
