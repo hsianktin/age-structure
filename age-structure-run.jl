@@ -21,7 +21,7 @@ elseif length(ARGS) == 2
         overwrite = false
     end
 else
-    error!("usage: age-structure-run.jl profile [overwrite]")
+    error("usage: age-structure-run.jl profile [overwrite]")
 end
 println("loading profile $(profile)...")
 if isfile("profile/$(profile).jl")
