@@ -74,13 +74,14 @@ function n₊(β, μ, k)
         n[i] = n[i-1] * exp(-μ(x(i-1))*dx)
     end
     # run
-    count = 0
+    # count = 0
     while t < 200
         push!(Nₜ,N(n))
         push!(Tₜ,t)
         # the hard upper limit t = 1000 is necessary because the actual solution
         # might be oscillating... In practice it is often the case
-        n,t = ∂ₜndt(n,t,β,μ,k)
+        # n,t = ∂ₜndt(n,t,β,μ,k)
+        n,t = euler(n,t,β,μ,k)
         # count += 1
         # if count % 10 == 0
         #     print("t = $(t), ∫βndx/dx = $(n[1])\r")

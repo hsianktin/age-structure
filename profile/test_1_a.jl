@@ -1,8 +1,8 @@
-βs = [i/10 for i in 15:0.25:25]
-μs = [i/10 for i in 5:0.25:15]
+βs = [i/10 for i in 20:1:21]
+μs = [i/10 for i in 1:0.5:10]
 ks = [1]
 type = "semi-constant"
-label = "example_1_a"
+label = "test_1_a"
 cmds = []
 for β in βs, μ in μs, k in ks
     cmd = `julia age-structure-base.jl $(β) $(μ) $(k) $(type)`

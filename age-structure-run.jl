@@ -1,13 +1,13 @@
 using CSV,DataFrames
 using Distributed
-addprocs(14)
+addprocs(8)
 begin
     using ProgressMeter
 end
 #################
 # testing purpose
-profile = "general"
-overwrite = true
+profile = "example_1_b"
+overwrite = false
 
 #################
 if length(ARGS) == 1
@@ -27,5 +27,5 @@ println("loading profile $(profile)...")
 if isfile("profile/$(profile).jl")
     include("profile/$(profile).jl")
 else
-    error!("profile/$(profile).jl not found")
+    error("profile/$(profile).jl not found")
 end
