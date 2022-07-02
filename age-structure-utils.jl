@@ -46,6 +46,20 @@ function ∂ₜn(β::Function,μ::Function,k::Function,n::Array)
     return V
 end
 
+function δ∂ₜn(β::Function,μ::Function,k::Function,n::Array,δn::Array)
+    V = zeros(1+convert(Int,A/dx))
+    V[1] = (∫βndx(β,δn)/dx # birth 
+            - (μ(x(1)) + ∫ₓkndx′(k,n,x(1))) * δn[1] - ∫ₓkndx′(k,δn,x(1)) * n[1] # death
+             - δn[1]/dx) # age transition 
+    for j in 2:i(A)-1
+        V[j] = (- (μ(x(j)) + ∫ₓkndx′(k,n,x(j))) * δn[j] - ∫ₓkndx′(k,δn,x(j)) * n[j] # death
+         + (δn[j-1] - δn[j])/dx) # age transition
+    end
+    V[i(A)] = (- μ(A) * δn[i(A)] # death 
+                + (δn[i(A)-1])) # age transition
+    return V
+end
+
 ## main method
 function euler(n::Array,t::Number,β::Function,μ::Function,k::Function)
 	# adaptive version of euler method

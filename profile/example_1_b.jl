@@ -9,18 +9,18 @@ for β in βs, μ in μs, k in ks
     push!(cmds,cmd)
 end
 if isfile("fig/$(label).csv") && !overwrite
-    println("data exists, skipping simulation...")
+    println("data exists, skipping calculation...")
     df = CSV.read("fig/$(label).csv",DataFrame)
 else
-    println("starting simulation...")
+    println("starting calculation...")
     @showprogress pmap(run,cmds)
-    println("simulation completed, saving data...")
+    println("calculation completed, saving data...")
     df = DataFrame(
         β_0 = Float64[],
         μ_0 = Float64[],
         k_0 = Float64[],
         N = Float64[],
-        T = Float64[],
+        Λ = Float64[],
         # ∂ᵤN = Float64[],
         # ∂ᵤlnN = Float64[],
     )

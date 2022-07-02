@@ -1,4 +1,15 @@
 using PGFPlotsX
+function type2latex(type)
+    if type == "semi-constant"
+        return raw"$k=\theta(x'-a)\theta(a-x)$"
+    elseif type == "semi-x′"
+        return raw"$k=x'\theta(x'-a)\theta(a-x)$"
+    elseif type == "semi-(x′-x)"
+        return raw"$k=(x'-x)\theta(x'-a)\theta(a-x)$"
+    else
+        error("unknown type")
+    end
+end
 push!(PGFPlotsX.CUSTOM_PREAMBLE, raw"\usepgfplotslibrary{colormaps}")
 t = @pgf Table({x = "μ_0", y = "β_0", z = "N", "col sep" = "comma"}, "$(label).csv")
 @pgf axis = Axis(
@@ -11,7 +22,7 @@ t = @pgf Table({x = "μ_0", y = "β_0", z = "N", "col sep" = "comma"}, "$(label)
         legend_pos="south east",
         view = (0, 90),
         colorbar,
-        "colormap/temp",
+        "colormap/hot2",
         "colorbar style"=@pgf {width="0.2cm"}
     },
     Plot3(
@@ -23,9 +34,8 @@ t = @pgf Table({x = "μ_0", y = "β_0", z = "N", "col sep" = "comma"}, "$(label)
         },
         t
     ),
-    LegendEntry("$type")
+    LegendEntry(type2latex(type))
 )
-pgfsave("fig/heatmap-bm-$(label).tex", axis)
 
 # identify nullcline on the left
 N̄ = maximum(df.N)
@@ -84,50 +94,45 @@ push!(axis,plot_line)
 push!(axis,legend_entry)
 pgfsave("fig/nullcline-$(label).tex", axis)
 
-# t = @pgf Table({x = "μ_0", y = "β_0", z = "∂ᵤN", "col sep" = "comma"}, "$(label).csv")
+# t = @pgf Table({x = "μ_0", y = "N", "col sep" = "comma"}, "$(label).csv")
 # @pgf axis = Axis(
 #     {
 #         width = "3.4in",
 #         height = "3.4in",
 #         xlabel = "death rate \$\\mu\$",
-#         ylabel = "birth rate \$\\beta\$",
-#         title = "\$ \\partial_{\\mu}N \$",
-#         view = (0, 90),
-#         colorbar,
-#         "colormap/jet",
+#         ylabel = "population at equilibrium \$ N \$",
+#         legend_pos="south east",
 #     },
-#     Plot3(
-#         {
-#             surf,
-#             shader = "flat",
-#             "mesh/rows" = length(βs),
-#             "mesh/cols" = length(μs),
-#         },
+#     Plot(
 #         t
-#     )
+#     ),
+#     LegendEntry("$type")
 # )
-# pgfsave("fig/diff-heatmap-bm-$(label).tex", axis)
+# pgfsave("fig/plot-$(label).tex", axis)
 
-# t = @pgf Table({x = "μ_0", y = "β_0", z = "∂ᵤlnN", "col sep" = "comma"}, "$(label).csv")
-# @pgf axis = Axis(
-#     {
-#         width = "3.4in",
-#         height = "3.4in",
-#         xlabel = "death rate \$\\mu\$",
-#         ylabel = "birth rate \$\\beta\$",
-#         title = "\$ \\partial_{\\mu} \\ln N \$",
-#         view = (0, 90),
-#         colorbar,
-#         "colormap/jet",
-#     },
-#     Plot3(
-#         {
-#             surf,
-#             shader = "flat",
-#             "mesh/rows" = length(βs),
-#             "mesh/cols" = length(μs),
-#         },
-#         t
-#     )
-# )
-# pgfsave("fig/diff-normal-heatmap-bm-$(label).tex", axis)
+t = @pgf Table({x = "μ_0", y = "β_0", z = "Λ", "col sep" = "comma"}, "$(label).csv")
+@pgf axis = Axis(
+    {
+        width = "3.4in",
+        height = "3.4in",
+        xlabel = "death rate \$\\mu\$",
+        ylabel = "birth rate \$\\beta\$",
+        title = "principle eigenvalue \$\\lambda_0\$",
+        legend_pos="south east",
+        view = (0, 90),
+        colorbar,
+        "colormap/hot2",
+        "colorbar style"=@pgf {width="0.2cm"}
+    },
+    Plot3(
+        {
+            surf,
+            shader = "flat",
+            "mesh/rows" = length(βs),
+            "mesh/cols" = length(μs),
+        },
+        t
+    ),
+    LegendEntry(type2latex(type))
+)
+pgfsave("fig/eigenvals-$(label).tex", axis)

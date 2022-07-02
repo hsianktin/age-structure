@@ -13,7 +13,7 @@ The code is an implementation of sampling the positive steady state with constan
 julia age-structure-run.jl "Profile Name" [overwrite]
 ```
 - It will read the profile with the name `Profile Name.jl` under the directory `profile/`.
-- In the profile, one specifies the necessary arguments needed for simulation, and provide them in the array of commands `cmds`. It also provides a string `label` and the method for storing data.
+- In the profile, one specifies the necessary arguments needed for calculation, and provide them in the array of commands `cmds`. It also provides a string `label` and the method for storing data.
 	- A sample profile `general.jl` is given as follows.
 	- To run it, use `julia age-structure-run.jl general`.
 ```julia
@@ -27,12 +27,12 @@ for β in βs, μ in μs, k in ks
     push!(cmds,cmd)
 end
 if isfile("fig/$(label).csv") && !overwrite
-    println("data exists, skipping simulation...")
+    println("data exists, skipping calculation...")
     df = CSV.read("fig/$(label).csv",DataFrame)
 else
-    println("starting simulation...")
+    println("starting calculation...")
     @showprogress pmap(run,cmds)
-    println("simulation completed, saving data...")
+    println("calculation completed, saving data...")
     df = DataFrame(
         β_0 = Float64[],
         μ_0 = Float64[],
@@ -59,7 +59,7 @@ include("../age-structure-plot-bm.jl")
 println("done.")
 ```
 -  `age-structure-utils.jl` contains the general implementation of functions.
-- `age-structure-base.jl` receives the commands and run the simulation.
+- `age-structure-base.jl` receives the commands and run the calculation.
 	- It also handles the parameters passed by commandline arguments.
 	- To use different types of dynamics, please change the way $\beta$, $\mu$, and $k$ are defined through parameters. 
 
